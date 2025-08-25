@@ -1,1 +1,1 @@
-This is the todo list project for the Odin Project.
+This is the weather app project for the Odin Project.
