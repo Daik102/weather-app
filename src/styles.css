@@ -45,7 +45,16 @@ button:hover {
   opacity: 0.8;
 }
 
+#location {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.8rem;
+}
 
+.search-btn {
+  padding: 0.8rem 1.6rem;
+  font-size: 1.6rem;
+  border-radius: 0.4rem;
+}
 
 .footer {
   display: flex;
