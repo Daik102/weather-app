@@ -1,5 +1,5 @@
 import './styles.css';
-// import { projectController, updateForProjectController } from './project-controller';
+import { renderData } from './render';
 
 function processDays(data, day) {
   const datetime = data.days[day].datetime;
@@ -32,14 +32,18 @@ function processHours(data, hour) {
   console.log(precip);
 }
 
+const searchBtn = document.querySelector('.search-btn');
+const dialogError = document.querySelector('.dialog-error');
+const backBtn = document.querySelector('.back-btn');
+
 async function getData(location) {
   try {
     const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
     const searchData = await response.json();
     const addressData = searchData.address;
     const address = addressData.charAt(0).toUpperCase() + addressData.slice(1).toLowerCase();
-    console.log(address);
-
+    renderData(address, searchData);
+    /*
     processHours(searchData, 0);
     processHours(searchData, 1);
     processHours(searchData, 2);
@@ -80,15 +84,22 @@ async function getData(location) {
     processDays(searchData, 12);
     processDays(searchData, 13);
     processDays(searchData, 14);
+    */
   } catch {
-    console.log('Sorry, no results found.');
+    dialogError.showModal();
   }
 }
 
-const searchBtn = document.querySelector('.search-btn');
-
 searchBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  const location = document.getElementById('location').value;
-  getData(location);
+  const locationInput = document.getElementById('location-input');
+  getData(locationInput.value);
+  locationInput.value = '';
 });
+
+backBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  dialogError.close();
+});
+
+getData('Tokyo');

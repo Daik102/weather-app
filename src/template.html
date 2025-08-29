@@ -7,12 +7,25 @@
     <!--<link rel="icon" href="./images/format-list-checks-custom.png" type="image/x-icon" />-->
   </head>
   <body>
+    <dialog class="dialog-error">
+      <form>
+        <p class="error-message">Sorry, no results found.</p>
+        <button class="back-btn">Back</button>
+      </form>
+    </dialog>
     <main>
       <h1>Odin Weather App</h1>
-      <form>
-        <input type="text" name="location" id="location">
+      <form class="search-section">
+        <input type="text" name="location-input" id="location-input" placeholder="Enter the location">
         <button class="search-btn">Search</button>
       </form>
+      <h2 class="location"></h2>
+      <div class="container"></div>
+      <div class="switch-section">
+        <button class="switch-btn hourly-btn">Hourly</button>
+        <button class="switch-btn two-days-btn">Today/Tomorrow</button>
+        <button class="switch-btn fifteen-days-btn">15 days</button>
+      </div>
     </main>
     <footer class="footer">
       <a
