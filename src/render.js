@@ -14,89 +14,147 @@ function getIcon(condition) {
   }
 }
 
-function processData(data, dayData) {
-  const dateData = data.datetime.replace(/-/g, ', ');
-  const date = format(new Date(dateData), "LLL d");
-  let conditions = data.conditions.split(',');
-  let conditionsForIcon = '';
-
-  if (conditions[1] !== undefined) {
-    conditionsForIcon = [conditions[0], conditions[1].trim()];
-  } else {
-    conditionsForIcon = [conditions[0]];
-  }
-  
-  const firstIcon = getIcon(conditionsForIcon[0]);
-  const secondIcon = getIcon(conditionsForIcon[1]);
-  const tempMax = Math.floor((data.tempmax - 32) * 5 / 9);
-  const tempMin = Math.floor((data.tempmin - 32) * 5 / 9);
-  const precipProb = Math.round(data.precipprob);
-  let day = '';
-  let firstIconsClass = '';
-  let secondIconsClass = '';
+export function renderData(address, data, mode) {
+  const location = document.querySelector('.location');
+  const container = document.querySelector('.container');
+  let days;
   let weatherHTML = '';
 
-  if (dayData === 0) {
-    day = 'Today';
-  } else {
-    day = 'Tomorrow';
+  if (mode === 'twoDays') {
+    days = [data.days[0], data.days[1]];
+  } else if (mode === 'fifteenDays') {
+    days = data.days;
   }
 
-  firstIconsClass = conditions[0].toLowerCase();
-  
-  if (firstIconsClass === 'partially cloudy') {
+  days.forEach((day, i) => {
+    const dateData = day.datetime.replace(/-/g, ', ');
+    let conditions = day.conditions.split(',');
+    let conditionsForIcon = '';
+    let secondIcon;
+    let firstIconsClass = '';
+    let secondIconsClass = '';
+
+    if (conditions[1] !== undefined) {
+      conditionsForIcon = [conditions[0], conditions[1].trim()];
+      secondIcon = getIcon(conditionsForIcon[1]);
+      secondIconsClass = conditions[1].toLowerCase();
+
+      if (secondIconsClass === ' partially cloudy') {
+        secondIconsClass = 'partially-cloudy';
+      }
+    } else {
+      conditionsForIcon = [conditions[0]];
+    }
+
+    const firstIcon = getIcon(conditionsForIcon[0]);
+    const tempMax = Math.floor((day.tempmax - 32) * 5 / 9);
+    const tempMin = Math.floor((day.tempmin - 32) * 5 / 9);
+    const precipProb = Math.round(day.precipprob);
+    firstIconsClass = conditions[0].toLowerCase();
+
+    if (firstIconsClass === 'partially cloudy') {
       firstIconsClass = 'partially-cloudy';
     }
 
-  if (conditions[1] !== undefined) {
-    secondIconsClass = conditions[1].toLowerCase();
+    if (mode === 'twoDays') {
+      const date = format(new Date(dateData), 'LLL d');
+      let oneDay = '';
 
-    if (secondIconsClass === ' partially cloudy') {
-      secondIconsClass = 'partially-cloudy';
+      if (i === 0) {
+        oneDay = 'Today';
+      } else {
+        oneDay = 'Tomorrow';
+      }
+
+      if (conditions[1] !== undefined) {
+        weatherHTML += `
+          <div class="one-day-container">
+            <p class="one-day-date">${oneDay} ${date}</p>
+            <div class="icon-container">
+              <div class="first-icon ${firstIconsClass}">
+                ${firstIcon}
+              </div>
+              <div class="second-icon ${secondIconsClass}">
+                ${secondIcon}
+              </div>
+            </div>
+            <p class="one-day-conditions">${conditions}</p>
+            <p class="one-day-temp-max">Max: ${tempMax}&deg;C</p>
+            <p class="one-day-temp-min">Min: ${tempMin}&deg;C</p>
+            <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
+          </div>
+        `;
+      } else {
+        weatherHTML += `
+          <div class="one-day-container">
+            <p class="one-day-date">${oneDay} ${date}</p>
+            <div class="icon-container">
+              <div class="first-icon ${firstIconsClass}">
+                ${firstIcon}
+              </div>
+            </div>
+            <p class="one-day-conditions">${conditions}</p>
+            <p class="one-day-temp-max">Max: ${tempMax}&deg;C</p>
+            <p class="one-day-temp-min">Min: ${tempMin}&deg;C</p>
+            <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
+          </div>
+        `;
+      }
+
+      container.innerHTML = weatherHTML;
+    } else if (mode === 'fifteenDays') {
+      const date = format(new Date(dateData), 'd');
+      const fifteenDaysContainer = document.createElement('div');
+      fifteenDaysContainer.classList = 'fifteen-days-container';
+      
+      if (conditions[1] !== undefined) {
+        weatherHTML += `
+          <ul class="fifteen-days-item">
+            <li class="fifteen-days-day">${date}</li>
+            <li class="fifteen-days-icon">
+              <div class="first-icon ${firstIconsClass}">
+                ${firstIcon}
+              </div>
+              <div class="second-icon ${secondIconsClass}">
+                ${secondIcon}
+              </div>
+            </li>
+            <li class="fifteen-days-temp-max">${tempMax}&deg;C</li>
+            <li class="fifteen-days-temp-min">${tempMin}&deg;C</li>
+            <li class="fifteen-days-precip">${precipProb}%</li>
+          </ul>
+        `;
+      } else {
+        weatherHTML += `
+          <ul class="fifteen-days-item">
+            <li class="fifteen-days-day">${date}</li>
+            <li class="fifteen-days-icon">
+              <div class="first-icon ${firstIconsClass}">
+                ${firstIcon}
+              </div>
+            </li>
+            <li class="fifteen-days-temp-max">${tempMax}&deg;C</li>
+            <li class="fifteen-days-temp-min">${tempMin}&deg;C</li>
+            <li class="fifteen-days-precip">${precipProb}%</li>
+          </ul>
+        `;
+      }
+
+      const heading = `
+        <ul class="fifteen-days-heading">
+          <li>Day</li>
+          <li>Cond.</li>
+          <li>Max</li>
+          <li>Min</li>
+          <li>Precip.</li>
+        </ul>
+      `;
+
+      fifteenDaysContainer.innerHTML = weatherHTML;
+      container.innerHTML = heading;
+      container.appendChild(fifteenDaysContainer);
     }
-
-    weatherHTML = `
-    <div class="one-day-container">
-      <p class="one-day-date">${day} ${date}</p>
-      <div class="icon-container">
-        <div class="first-icon ${firstIconsClass}">
-          ${firstIcon}
-        </div>
-        <div class="second-icon ${secondIconsClass}">
-          ${secondIcon}
-        </div>
-      </div>
-      <p class="one-day-conditions">${conditions}</p>
-      <p class="one-day-max-temp">Max: ${tempMax}&deg;C</p>
-      <p class="one-day-min-temp">Min: ${tempMin}&deg;C</p>
-      <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
-    </div>
-  `;
-  } else {
-    weatherHTML = `
-    <div class="one-day-container">
-      <p class="one-day-date">${day} ${date}</p>
-      <div class="icon-container">
-        <div class="first-icon ${firstIconsClass}">
-          ${firstIcon}
-        </div>
-      </div>
-      <p class="one-day-conditions">${conditions}</p>
-      <p class="one-day-max-temp">Max: ${tempMax}&deg;C</p>
-      <p class="one-day-min-temp">Min: ${tempMin}&deg;C</p>
-      <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
-    </div>
-  `;
-  }
+  });
   
-  return weatherHTML;
-}
-
-export function renderData(address, searchData) {
-  const location = document.querySelector('.location');
-  const container = document.querySelector('.container');
-  const todaysHTML = processData(searchData.days[0], 0);
-  const tomorrowsHTML = processData(searchData.days[1], 1);
   location.textContent = address;
-  container.innerHTML = todaysHTML + tomorrowsHTML;
 }

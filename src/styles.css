@@ -40,6 +40,10 @@ body {
   background-color: var(--background-theme);
 }
 
+ul {
+  list-style: none;
+}
+
 button {
   border: none;
 }
@@ -124,7 +128,8 @@ h2 {
   align-content: center;
   gap: 1.2rem;
   width: 44rem;
-  background-color: var(--super-lightblue-theme);
+  height: 26rem;
+  background-color: var(--super-lightgray-theme);
   border-radius: 0.8rem;
 }
 
@@ -148,21 +153,33 @@ h2 {
 .icon-container {
   display: flex;
   justify-content: center;
+  gap: 0.8rem;
   width: 100%;
   margin: 1.2rem 0 0.8rem;
   background-color: var(--white-theme);
 }
 
 .first-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50%;
   fill: var(--white-theme);
-  
+  border-radius: 0.4rem;
+}
+
+.first-icon svg,
+.second-icon svg {
+  aspect-ratio: 4 / 3;
 }
 
 .second-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50%;
   fill: var(--white-theme);
-  
+  border-radius: 0.4rem;
 }
 
 .clear {
@@ -186,21 +203,88 @@ h2 {
 }
 
 .one-day-conditions {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
 }
 
-.one-day-max-temp {
-  font-size: 1.6rem;
+.one-day-temp-max {
+  font-size: 1.8rem;
   color: var(--red-theme);
 }
 
-.one-day-min-temp {
-  font-size: 1.6rem;
+.one-day-temp-min {
+  font-size: 1.8rem;
   color: var(--blue-theme);
 }
 
 .one-day-precip-prob {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
+}
+
+.fifteen-days-heading {
+  padding-top: 0.8rem;
+  background-color: var(--super-lightblue-theme);
+  border-radius: 0.8rem 0 0 0.8rem;
+}
+
+.fifteen-days-container {
+  display: flex;
+  gap: 0.8rem;
+  height: 25.2rem;
+  padding-top: 0.8rem;
+  border-radius: 0.8rem;
+  overflow: auto;
+}
+
+.fifteen-days-heading li {
+  padding: 0.8rem 0.8rem 0.8rem 1.2rem;
+  font-size: 1.8rem;
+  border-bottom: 0.1rem solid var(--lightgray-theme);
+}
+
+.fifteen-days-heading li:nth-child(2) {
+  padding: 1.6rem 0.8rem 1.6rem 1.2rem;
+}
+
+.fifteen-days-heading li:last-child,
+.fifteen-days-item li:last-child {
+  border-bottom: none;
+}
+
+.fifteen-days-item {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.fifteen-days-item li {
+  display: flex;
+  justify-content: center;
+  gap: 0.2rem;
+  width: 5.6rem;
+  padding: 0.8rem 0.4rem;
+  font-size: 1.8rem;
+  border-bottom: 0.1rem solid var(--lightgray-theme);
+}
+
+.fifteen-days-container li:nth-child(2) {
+  padding: 1.6rem 0;
+}
+
+.fifteen-days-icon {
+  display: flex;
+  justify-content: center;
+}
+
+.fifteen-days-icon svg {
+  width: 2.7rem;
+}
+
+.fifteen-days-temp-max {
+  color: var(--red-theme);
+}
+
+.fifteen-days-temp-min {
+  color: var(--blue-theme);
 }
 
 .switch-section {

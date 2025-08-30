@@ -1,23 +1,6 @@
 import './styles.css';
 import { renderData } from './render';
 
-function processDays(data, day) {
-  const datetime = data.days[day].datetime;
-  const conditions = data.days[day].conditions;
-  const tempmaxF = data.days[day].tempmax;
-  const tempmaxC = Math.floor((tempmaxF -32) * 5 / 9) + '\u00B0C';
-  const tempminF = data.days[day].tempmin;
-  const tempminC = Math.floor((tempminF -32) * 5 / 9) + '\u00B0C';
-  const precipprobData = data.days[day].precipprob;
-  const precipprob = Math.round(precipprobData) + '%';
-
-  console.log(datetime);
-  console.log(conditions);
-  console.log(tempmaxC);
-  console.log(tempminC);
-  console.log(precipprob);
-}
-
 function processHours(data, hour) {
   const datetime = data.days[0].hours[hour].datetime;
   const conditions = data.days[0].hours[hour].conditions;
@@ -35,14 +18,17 @@ function processHours(data, hour) {
 const searchBtn = document.querySelector('.search-btn');
 const dialogError = document.querySelector('.dialog-error');
 const backBtn = document.querySelector('.back-btn');
+const twoDaysBtn = document.querySelector('.two-days-btn');
+const fifteenDaysBtn = document.querySelector('.fifteen-days-btn');
 
-async function getData(location) {
+async function getData(location, mode) {
   try {
     const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
-    const searchData = await response.json();
-    const addressData = searchData.address;
+    const data = await response.json();
+    const addressData = data.address;
     const address = addressData.charAt(0).toUpperCase() + addressData.slice(1).toLowerCase();
-    renderData(address, searchData);
+    renderData(address, data, mode);
+
     /*
     processHours(searchData, 0);
     processHours(searchData, 1);
@@ -68,22 +54,6 @@ async function getData(location) {
     processHours(searchData, 21);
     processHours(searchData, 22);
     processHours(searchData, 23);
-
-    processDays(searchData, 0);
-    processDays(searchData, 1);
-    processDays(searchData, 2);
-    processDays(searchData, 3);
-    processDays(searchData, 4);
-    processDays(searchData, 5);
-    processDays(searchData, 6);
-    processDays(searchData, 7);
-    processDays(searchData, 8);
-    processDays(searchData, 9);
-    processDays(searchData, 10);
-    processDays(searchData, 11);
-    processDays(searchData, 12);
-    processDays(searchData, 13);
-    processDays(searchData, 14);
     */
   } catch {
     dialogError.showModal();
@@ -93,7 +63,8 @@ async function getData(location) {
 searchBtn.addEventListener('click', (e) => {
   e.preventDefault();
   const locationInput = document.getElementById('location-input');
-  getData(locationInput.value);
+  locationData = locationInput.value;
+  getData(locationData, 'twoDays');
   locationInput.value = '';
 });
 
@@ -102,4 +73,16 @@ backBtn.addEventListener('click', (e) => {
   dialogError.close();
 });
 
-getData('Tokyo');
+twoDaysBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  getData(locationData, 'twoDays');
+});
+
+fifteenDaysBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  getData(locationData, 'fifteenDays');
+});
+
+// Initial loading
+let locationData = 'Tokyo';
+getData('Tokyo', 'twoDays');
