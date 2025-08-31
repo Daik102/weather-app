@@ -14,20 +14,28 @@ function getIcon(condition) {
   }
 }
 
-export function renderData(address, data, mode) {
+let weatherHTML = '';
+let clearHTML = false;
+
+export function renderData(address, days, dateData, mode, times) {
   const location = document.querySelector('.location');
   const container = document.querySelector('.container');
-  let days;
-  let weatherHTML = '';
+  let tempMax = 0;
+  let tempMin = 0;
+  let precipProb = 0;
+  let temp = 0;
+  let precip = 0;
+  location.textContent = address;
 
-  if (mode === 'twoDays') {
-    days = [data.days[0], data.days[1]];
-  } else if (mode === 'fifteenDays') {
-    days = data.days;
+  if (mode !== 'hourly') {
+    weatherHTML = '';
   }
 
   days.forEach((day, i) => {
-    const dateData = day.datetime.replace(/-/g, ', ');
+    if (mode !== 'hourly') {
+      dateData = day.datetime.replace(/-/g, ', ');
+    }
+    
     let conditions = day.conditions.split(',');
     let conditionsForIcon = '';
     let secondIcon;
@@ -47,9 +55,16 @@ export function renderData(address, data, mode) {
     }
 
     const firstIcon = getIcon(conditionsForIcon[0]);
-    const tempMax = Math.floor((day.tempmax - 32) * 5 / 9);
-    const tempMin = Math.floor((day.tempmin - 32) * 5 / 9);
-    const precipProb = Math.round(day.precipprob);
+    
+    if (mode !== 'hourly') {
+      tempMax = Math.floor((day.tempmax - 32) * 5 / 9);
+      tempMin = Math.floor((day.tempmin - 32) * 5 / 9);
+      precipProb = Math.round(day.precipprob);
+    } else {
+      temp = Math.floor((day.temp - 32) * 5 / 9);
+      precip = Math.round(day.precip * 25.4);
+    }
+    
     firstIconsClass = conditions[0].toLowerCase();
 
     if (firstIconsClass === 'partially cloudy') {
@@ -79,8 +94,8 @@ export function renderData(address, data, mode) {
               </div>
             </div>
             <p class="one-day-conditions">${conditions}</p>
-            <p class="one-day-temp-max">Max: ${tempMax}&deg;C</p>
-            <p class="one-day-temp-min">Min: ${tempMin}&deg;C</p>
+            <p class="one-day-temp-max">Max: ${tempMax}<span class="unit"> &deg;C</span></p>
+            <p class="one-day-temp-min">Min: ${tempMin}<span class="unit"> &deg;C</span></p>
             <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
           </div>
         `;
@@ -94,18 +109,14 @@ export function renderData(address, data, mode) {
               </div>
             </div>
             <p class="one-day-conditions">${conditions}</p>
-            <p class="one-day-temp-max">Max: ${tempMax}&deg;C</p>
-            <p class="one-day-temp-min">Min: ${tempMin}&deg;C</p>
+            <p class="one-day-temp-max">Max: ${tempMax}<span class="unit"> &deg;C</span></p>
+            <p class="one-day-temp-min">Min: ${tempMin}<span class="unit"> &deg;C</span></p>
             <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
           </div>
         `;
       }
-
-      container.innerHTML = weatherHTML;
     } else if (mode === 'fifteenDays') {
       const date = format(new Date(dateData), 'd');
-      const fifteenDaysContainer = document.createElement('div');
-      fifteenDaysContainer.classList = 'fifteen-days-container';
       
       if (conditions[1] !== undefined) {
         weatherHTML += `
@@ -119,8 +130,8 @@ export function renderData(address, data, mode) {
                 ${secondIcon}
               </div>
             </li>
-            <li class="fifteen-days-temp-max">${tempMax}&deg;C</li>
-            <li class="fifteen-days-temp-min">${tempMin}&deg;C</li>
+            <li class="fifteen-days-temp-max">${tempMax}<span class="unit">&deg;C</span></li>
+            <li class="fifteen-days-temp-min">${tempMin}<span class="unit">&deg;C</span></li>
             <li class="fifteen-days-precip">${precipProb}%</li>
           </ul>
         `;
@@ -133,14 +144,69 @@ export function renderData(address, data, mode) {
                 ${firstIcon}
               </div>
             </li>
-            <li class="fifteen-days-temp-max">${tempMax}&deg;C</li>
-            <li class="fifteen-days-temp-min">${tempMin}&deg;C</li>
-            <li class="fifteen-days-precip">${precipProb}%</li>
+            <li class="fifteen-days-temp-max">${tempMax}<span class="unit">&deg;C</span></li>
+            <li class="fifteen-days-temp-min">${tempMin}<span class="unit">&deg;C</span></li>
+            <li class="fifteen-days-precip">${precipProb}<span class="unit">%</span></li>
           </ul>
         `;
       }
+    } else if (mode === 'hourly') {
+      let date = '&nbsp;';
 
-      const heading = `
+      const hourData = day.datetime;
+      const hour = Number(hourData.slice(0, 2));
+
+      if (times === 0 && clearHTML === false) {
+        weatherHTML = '';
+        clearHTML = true;
+        date = format(new Date(dateData), 'd');
+      }
+
+      if (times === 1 && hour === 0 || times === 2 && hour === 0) {
+        date = format(new Date(dateData), 'd');
+      }
+
+      if (conditions[1] !== undefined) {
+        weatherHTML += `
+          <ul class="hourly-item">
+            <li class="hourly-date">${date}</li>
+            <li class="hourly-hour">${hour}</li>
+            <li class="hourly-icon">
+              <div class="first-icon ${firstIconsClass}">
+                ${firstIcon}
+              </div>
+              <div class="second-icon ${secondIconsClass}">
+                ${secondIcon}
+              </div>
+            </li>
+            <li class="hourly-temp">${temp}<span class="unit">&deg;C</span></li>
+            <li class="hourly-precip">${precip}<span class="unit">mm</span></li>
+          </ul>
+        `;
+      } else {
+        weatherHTML += `
+          <ul class="hourly-item">
+            <li class="hourly-date">${date}</li>
+            <li class="hourly-hour">${hour}</li>
+            <li class="hourly-icon">
+              <div class="first-icon ${firstIconsClass}">
+                ${firstIcon}
+              </div>
+            </li>
+            <li class="hourly-temp">${temp}<span class="unit">&deg;C</span></li>
+            <li class="hourly-precip">${precip}<span class="unit">mm</span></li>
+          </ul>
+        `;
+      }
+    }
+  });
+
+  if (mode === 'twoDays') {
+    container.innerHTML = weatherHTML;
+  } else if (mode === 'fifteenDays') {
+    const fifteenDaysContainer = document.createElement('div');
+    fifteenDaysContainer.classList = 'fifteen-days-container';
+    const heading = `
         <ul class="fifteen-days-heading">
           <li>Day</li>
           <li>Cond.</li>
@@ -150,11 +216,32 @@ export function renderData(address, data, mode) {
         </ul>
       `;
 
-      fifteenDaysContainer.innerHTML = weatherHTML;
-      container.innerHTML = heading;
-      container.appendChild(fifteenDaysContainer);
-    }
-  });
-  
-  location.textContent = address;
+    fifteenDaysContainer.innerHTML = weatherHTML;
+    container.innerHTML = heading;
+    container.appendChild(fifteenDaysContainer);
+  } else if (mode === 'hourly' && times === 2) {
+    const hourlyContainer = document.createElement('div');
+    hourlyContainer.classList = 'hourly-container';
+    const heading = `
+      <ul class="hourly-heading">
+        <li>Day</li>
+        <li>Hour</li>
+        <li>Cond.</li>
+        <li>Temp</li>
+        <li>Precip.</li>
+      </ul>
+    `;
+    
+    hourlyContainer.innerHTML = weatherHTML;
+    container.innerHTML = heading;
+    container.appendChild(hourlyContainer);
+    clearHTML = false;
+    const hourlyDates = document.querySelectorAll('.hourly-date');
+
+    hourlyDates.forEach((date) => {
+      if (date.nextElementSibling.textContent === '0') {
+        date.parentElement.classList.add('border-line');
+      }
+    });
+  }
 }

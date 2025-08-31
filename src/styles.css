@@ -226,15 +226,6 @@ h2 {
   border-radius: 0.8rem 0 0 0.8rem;
 }
 
-.fifteen-days-container {
-  display: flex;
-  gap: 0.8rem;
-  height: 25.2rem;
-  padding-top: 0.8rem;
-  border-radius: 0.8rem;
-  overflow: auto;
-}
-
 .fifteen-days-heading li {
   padding: 0.8rem 0.8rem 0.8rem 1.2rem;
   font-size: 1.8rem;
@@ -250,6 +241,15 @@ h2 {
   border-bottom: none;
 }
 
+.fifteen-days-container {
+  display: flex;
+  gap: 0.8rem;
+  height: 25.72rem;
+  padding-top: 0.8rem;
+  border-radius: 0.8rem;
+  overflow: auto;
+}
+
 .fifteen-days-item {
   display: flex;
   flex-direction: column;
@@ -260,7 +260,7 @@ h2 {
   display: flex;
   justify-content: center;
   gap: 0.2rem;
-  width: 5.6rem;
+  width: 6.2rem;
   padding: 0.8rem 0.4rem;
   font-size: 1.8rem;
   border-bottom: 0.1rem solid var(--lightgray-theme);
@@ -276,7 +276,14 @@ h2 {
 }
 
 .fifteen-days-icon svg {
-  width: 2.7rem;
+  width: 3rem;
+}
+
+.fifteen-days-temp-max,
+.fifteen-days-temp-min,
+.fifteen-days-precip {
+  display: flex;
+  align-items: flex-end;
 }
 
 .fifteen-days-temp-max {
@@ -285,6 +292,83 @@ h2 {
 
 .fifteen-days-temp-min {
   color: var(--blue-theme);
+}
+
+.hourly-heading {
+  padding-top: 0.8rem;
+  background-color: var(--super-lightblue-theme);
+  border-radius: 0.8rem 0 0 0.8rem;
+}
+
+.hourly-heading li {
+  padding: 0.8rem 0.8rem 0.8rem 1.2rem;
+  font-size: 1.8rem;
+  border-bottom: 0.1rem solid var(--lightgray-theme);
+}
+
+.hourly-heading li:nth-child(3) {
+  padding: 1.6rem 0.8rem 1.6rem 1.2rem;
+}
+
+.hourly-heading li:last-child,
+.hourly-item li:last-child {
+  border-bottom: none;
+}
+
+.hourly-container {
+  display: flex;
+  gap: 0.4rem;
+  height: 25.72rem;
+  padding-top: 0.8rem;
+  border-radius: 0.8rem;
+  overflow: auto;
+}
+
+.hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.border-line {
+  border-left: 0.1rem solid var(--lightgray-theme);
+}
+
+.hourly-item li {
+  display: flex;
+  justify-content: center;
+  gap: 0.2rem;
+  width: 6.2rem;
+  padding: 0.8rem 0.4rem;
+  font-size: 1.8rem;
+  border-bottom: 0.1rem solid var(--lightgray-theme);
+}
+
+.hidden-date {
+  visibility: hidden;
+}
+
+.hourly-item li:nth-child(3) {
+  padding: 1.6rem 0;
+}
+
+.hourly-icon {
+  display: flex;
+  justify-content: center;
+}
+
+.hourly-icon svg {
+  width: 3rem;
+}
+
+.unit {
+  font-size: 1.4rem;
+}
+
+.hourly-temp,
+.hourly-precip {
+  display: flex;
+  align-items: flex-end;
 }
 
 .switch-section {
