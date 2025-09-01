@@ -17,13 +17,13 @@ function getIcon(condition) {
 let weatherHTML = '';
 let clearHTML = false;
 
-export function renderData(address, days, dateData, mode, times) {
+export function renderPage(address, days, dateData, mode, times) {
   const location = document.querySelector('.location');
   const container = document.querySelector('.container');
   let tempMax = 0;
   let tempMin = 0;
-  let precipProb = 0;
   let temp = 0;
+  let precipProb = 0;
   let precip = 0;
   location.textContent = address;
 
@@ -85,17 +85,17 @@ export function renderData(address, days, dateData, mode, times) {
         weatherHTML += `
           <div class="one-day-container">
             <p class="one-day-date">${oneDay} ${date}</p>
-            <div class="icon-container">
-              <div class="first-icon ${firstIconsClass}">
+            <div class="icon-container double-icon">
+              <div class="first-icon ${firstIconsClass} left-icon">
                 ${firstIcon}
               </div>
-              <div class="second-icon ${secondIconsClass}">
+              <div class="second-icon ${secondIconsClass} right-icon">
                 ${secondIcon}
               </div>
             </div>
             <p class="one-day-conditions">${conditions}</p>
-            <p class="one-day-temp-max">Max: ${tempMax}<span class="unit"> &deg;C</span></p>
-            <p class="one-day-temp-min">Min: ${tempMin}<span class="unit"> &deg;C</span></p>
+            <p class="one-day-temp-max">Max: ${tempMax}<span class="unit unit-temp-max"> &deg;C</span></p>
+            <p class="one-day-temp-min">Min: ${tempMin}<span class="unit unit-temp-min"> &deg;C</span></p>
             <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
           </div>
         `;
@@ -104,13 +104,13 @@ export function renderData(address, days, dateData, mode, times) {
           <div class="one-day-container">
             <p class="one-day-date">${oneDay} ${date}</p>
             <div class="icon-container">
-              <div class="first-icon ${firstIconsClass}">
+              <div class="first-icon ${firstIconsClass} single-icon">
                 ${firstIcon}
               </div>
             </div>
             <p class="one-day-conditions">${conditions}</p>
-            <p class="one-day-temp-max">Max: ${tempMax}<span class="unit"> &deg;C</span></p>
-            <p class="one-day-temp-min">Min: ${tempMin}<span class="unit"> &deg;C</span></p>
+            <p class="one-day-temp-max">Max: ${tempMax}<span class="unit unit-temp-max"> &deg;C</span></p>
+            <p class="one-day-temp-min">Min: ${tempMin}<span class="unit unit-temp-min"> &deg;C</span></p>
             <p class="one-day-precip-prob">Precipitation: ${precipProb}%</p>
           </div>
         `;
@@ -123,15 +123,15 @@ export function renderData(address, days, dateData, mode, times) {
           <ul class="fifteen-days-item">
             <li class="fifteen-days-day">${date}</li>
             <li class="fifteen-days-icon">
-              <div class="first-icon ${firstIconsClass}">
+              <div class="first-icon ${firstIconsClass} double-icon-for-fifteen-days left-icon-small">
                 ${firstIcon}
               </div>
-              <div class="second-icon ${secondIconsClass}">
+              <div class="second-icon ${secondIconsClass} double-icon-for-fifteen-days right-icon-small">
                 ${secondIcon}
               </div>
             </li>
-            <li class="fifteen-days-temp-max">${tempMax}<span class="unit">&deg;C</span></li>
-            <li class="fifteen-days-temp-min">${tempMin}<span class="unit">&deg;C</span></li>
+            <li class="fifteen-days-temp-max">${tempMax}<span class="unit unit-temp-max">&deg;C</span></li>
+            <li class="fifteen-days-temp-min">${tempMin}<span class="unit unit-temp-min">&deg;C</span></li>
             <li class="fifteen-days-precip">${precipProb}%</li>
           </ul>
         `;
@@ -140,12 +140,12 @@ export function renderData(address, days, dateData, mode, times) {
           <ul class="fifteen-days-item">
             <li class="fifteen-days-day">${date}</li>
             <li class="fifteen-days-icon">
-              <div class="first-icon ${firstIconsClass}">
+              <div class="first-icon ${firstIconsClass} single-icon-small">
                 ${firstIcon}
               </div>
             </li>
-            <li class="fifteen-days-temp-max">${tempMax}<span class="unit">&deg;C</span></li>
-            <li class="fifteen-days-temp-min">${tempMin}<span class="unit">&deg;C</span></li>
+            <li class="fifteen-days-temp-max">${tempMax}<span class="unit unit-temp-max">&deg;C</span></li>
+            <li class="fifteen-days-temp-min">${tempMin}<span class="unit unit-temp-min">&deg;C</span></li>
             <li class="fifteen-days-precip">${precipProb}<span class="unit">%</span></li>
           </ul>
         `;
@@ -172,10 +172,10 @@ export function renderData(address, days, dateData, mode, times) {
             <li class="hourly-date">${date}</li>
             <li class="hourly-hour">${hour}</li>
             <li class="hourly-icon">
-              <div class="first-icon ${firstIconsClass}">
+              <div class="first-icon ${firstIconsClass} double-icon-for-hourly left-icon-small">
                 ${firstIcon}
               </div>
-              <div class="second-icon ${secondIconsClass}">
+              <div class="second-icon ${secondIconsClass} double-icon-for-hourly right-icon-small">
                 ${secondIcon}
               </div>
             </li>
@@ -189,7 +189,7 @@ export function renderData(address, days, dateData, mode, times) {
             <li class="hourly-date">${date}</li>
             <li class="hourly-hour">${hour}</li>
             <li class="hourly-icon">
-              <div class="first-icon ${firstIconsClass}">
+              <div class="first-icon ${firstIconsClass} single-icon-small">
                 ${firstIcon}
               </div>
             </li>

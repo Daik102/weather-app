@@ -1,45 +1,55 @@
 import './styles.css';
-import { renderData } from './render';
+import { renderPage } from './render';
 
 const searchBtn = document.querySelector('.search-btn');
-const dialogError = document.querySelector('.dialog-error');
 const backBtn = document.querySelector('.back-btn');
 const hourlyBtn = document.querySelector('.hourly-btn');
 const twoDaysBtn = document.querySelector('.two-days-btn');
 const fifteenDaysBtn = document.querySelector('.fifteen-days-btn');
+const dialogLoading = document.querySelector('.dialog-loading');
+const dialogError = document.querySelector('.dialog-error');
 
 async function getData(location, mode) {
   try {
+    dialogLoading.showModal();
     const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
     const data = await response.json();
     const addressData = data.address;
-    const address = addressData.charAt(0).toUpperCase() + addressData.slice(1).toLowerCase();
+    const address = addressData
+      .split(' ')
+      .map((item) => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase())
+      .join()
+      .replaceAll(',', ' ');
     let days;
     let dateData;
-    
+
+    dialogLoading.close();
+
     if (mode === 'twoDays') {
       days = [data.days[0], data.days[1]];
-      renderData(address, days, dateData, mode);
+      renderPage(address, days, dateData, mode);
     } else if (mode === 'fifteenDays') {
       days = data.days;
-      renderData(address, days, dateData, mode);
+      renderPage(address, days, dateData, mode);
     } else if (mode === 'hourly') {
       const currentTimeData = data.currentConditions.datetime;
       const currentTime = Number(currentTimeData.slice(0,2));
-
       let hoursData = data.days[0].hours;
       const hours = hoursData.slice(currentTime);
       const hoursTomorrow = data.days[1].hours;
-      const hoursDayAfterTomorrow = hoursData.slice(0, currentTime);
+      const hoursDayAfterTomorrow = data.days[2].hours.slice(0, currentTime);
       
       dateData = data.days[0].datetime.replace(/-/g, ', ');
       const dateDataTomorrow = data.days[1].datetime.replace(/-/g, ', ');
       const dateDataDayAfterTomorrow = data.days[2].datetime.replace(/-/g, ', ');
       
-      renderData(address, hours, dateData, mode, 0);
-      renderData(address, hoursTomorrow, dateDataTomorrow, mode, 1);
-      renderData(address, hoursDayAfterTomorrow, dateDataDayAfterTomorrow, mode, 2);
-    }    
+      renderPage(address, hours, dateData, mode, 0);
+      renderPage(address, hoursTomorrow, dateDataTomorrow, mode, 1);
+      renderPage(address, hoursDayAfterTomorrow, dateDataDayAfterTomorrow, mode, 2);
+    }
+
+    locationData = location;
+    localStorage.setItem('location', JSON.stringify(locationData));
   } catch {
     dialogError.showModal();
   }
@@ -48,14 +58,20 @@ async function getData(location, mode) {
 searchBtn.addEventListener('click', (e) => {
   e.preventDefault();
   const locationInput = document.getElementById('location-input');
-  locationData = locationInput.value;
-  getData(locationData, 'twoDays');
+
+  if (locationInput.value === '') {
+    return;
+  }
+
+  const preLocationData = locationInput.value;
+  getData(preLocationData, 'twoDays');
   locationInput.value = '';
 });
 
 backBtn.addEventListener('click', (e) => {
   e.preventDefault();
   dialogError.close();
+  getData(locationData, 'twoDays');
 });
 
 hourlyBtn.addEventListener('click', (e) => {
@@ -74,5 +90,5 @@ fifteenDaysBtn.addEventListener('click', (e) => {
 });
 
 // Initial loading
-let locationData = 'Tokyo';
-getData('Tokyo', 'twoDays');
+let locationData = JSON.parse(localStorage.getItem('location')) || 'Tokyo';
+getData(locationData, 'twoDays');
