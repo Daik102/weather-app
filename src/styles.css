@@ -50,9 +50,9 @@ button:hover {
 
 .dialog-loading,
 .dialog-error {
-  margin: 31.32rem auto;
+  margin: 31.72rem auto;
   width: 44rem;
-  height: 26rem;
+  height: 25.2rem;
   background-color: var(--super-lightblue-theme);
   border: none;
   border-radius: 0.8rem;
