@@ -431,20 +431,22 @@ h2 {
 
 .footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.8rem;
   width: 48rem;
   height: 10vh;
-  padding-top: 2.4rem;
+  
   background-color: var(--black-theme);
 }
 
-.admin-link {
+.link {
   font-size: 1.4rem;
   color: var(--white-theme);
   text-decoration: none;
 }
 
-.admin-link:hover {
+.link:hover {
   text-decoration: underline;
 }
