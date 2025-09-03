@@ -20,6 +20,7 @@
   --white-theme: #faffff;
   --red-theme: #ff5011;
   --orange-theme: #ffb730;
+  --lightblue-theme: #abc8ff;
   --super-lightblue-theme: #dce8ff;
   --ultra-lightblue-theme: #ecf2ff;
   --snow-theme: #b8d1ff;
@@ -45,7 +46,6 @@ button {
 
 button:hover {
   cursor: pointer;
-  background-color: var(--ultra-lightblue-theme);
 }
 
 .dialog-loading,
@@ -88,8 +88,17 @@ button:hover {
   background-color: var(--super-lightblue-theme);
 }
 
+.search-btn,
+.selected-btn {
+  background-color: var(--lightblue-theme);
+}
+
 .back-btn {
   border: 0.1rem solid var(--black-theme);
+}
+
+.switch-btn:hover {
+  background-color: var(--lightblue-theme);
 }
 
 main {

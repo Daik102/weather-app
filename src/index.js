@@ -26,12 +26,21 @@ async function getData(location, mode) {
     dialogLoading.close();
 
     if (mode === 'twoDays') {
+      fifteenDaysBtn.classList.remove('selected-btn');
+      hourlyBtn.classList.remove('selected-btn');
+      twoDaysBtn.classList.add('selected-btn');
       days = [data.days[0], data.days[1]];
       renderPage(address, days, dateData, mode);
     } else if (mode === 'fifteenDays') {
+      twoDaysBtn.classList.remove('selected-btn');
+      hourlyBtn.classList.remove('selected-btn');
+      fifteenDaysBtn.classList.add('selected-btn');
       days = data.days;
       renderPage(address, days, dateData, mode);
     } else if (mode === 'hourly') {
+      twoDaysBtn.classList.remove('selected-btn');
+      fifteenDaysBtn.classList.remove('selected-btn');
+      hourlyBtn.classList.add('selected-btn');
       const currentTimeData = data.currentConditions.datetime;
       const currentTime = Number(currentTimeData.slice(0,2));
       let hoursData = data.days[0].hours;
