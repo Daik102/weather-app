@@ -53,7 +53,7 @@ button:hover {
 
 .dialog-loading,
 .dialog-error {
-  margin: 31.72rem auto;
+  margin: 32.6rem auto;
   width: 44rem;
   height: 25.2rem;
   background-color: var(--super-lightblue-theme);
@@ -100,6 +100,10 @@ button:hover {
   border: 0.1rem solid var(--black-theme);
 }
 
+.back-btn:hover {
+  background-color: var(--lightblue-theme);
+}
+
 .switch-btn:hover {
   background-color: var(--lightblue-theme);
 }
@@ -138,7 +142,7 @@ h1 {
 }
 
 h2 {
-  font-size: 2.8rem;
+  font-size: 3.2rem;
   font-weight: 300;
   color: var(--white-theme);
 }

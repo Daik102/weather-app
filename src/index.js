@@ -1,103 +1,108 @@
 import './styles.css';
 import { renderPage } from './render';
 
+
+const switchBtns = document.querySelectorAll('.switch-btn');
 const searchBtn = document.querySelector('.search-btn');
-const backBtn = document.querySelector('.back-btn');
 const hourlyBtn = document.querySelector('.hourly-btn');
 const twoDaysBtn = document.querySelector('.two-days-btn');
 const fifteenDaysBtn = document.querySelector('.fifteen-days-btn');
+const backBtn = document.querySelector('.back-btn');
 const dialogLoading = document.querySelector('.dialog-loading');
 const dialogError = document.querySelector('.dialog-error');
 
-async function getData(location, mode) {
+async function getData(locationValue, mode) {
   try {
     dialogLoading.showModal();
-    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
+    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${locationValue}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
     const data = await response.json();
     const addressData = data.address;
     const address = addressData
       .split(' ')
       .map((item) => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase())
-      .join()
-      .replaceAll(',', ' ');
-    let days;
+      .join(' ');
+    let days = data.days;
     let dateData;
-
+    
     dialogLoading.close();
 
+    switchBtns.forEach((btn) => {
+      btn.classList.remove('selected-btn');
+    });
+
     if (mode === 'twoDays') {
-      fifteenDaysBtn.classList.remove('selected-btn');
-      hourlyBtn.classList.remove('selected-btn');
       twoDaysBtn.classList.add('selected-btn');
       days = [data.days[0], data.days[1]];
-      renderPage(address, days, dateData, mode);
+      renderPage(address, days);
     } else if (mode === 'fifteenDays') {
-      twoDaysBtn.classList.remove('selected-btn');
-      hourlyBtn.classList.remove('selected-btn');
       fifteenDaysBtn.classList.add('selected-btn');
-      days = data.days;
-      renderPage(address, days, dateData, mode);
-    } else if (mode === 'hourly') {
-      twoDaysBtn.classList.remove('selected-btn');
-      fifteenDaysBtn.classList.remove('selected-btn');
+      renderPage(address, days);
+    } else {
       hourlyBtn.classList.add('selected-btn');
       const currentTimeData = data.currentConditions.datetime;
       const currentTime = Number(currentTimeData.slice(0,2));
-      let hoursData = data.days[0].hours;
-      const hours = hoursData.slice(currentTime);
+      const hoursData = data.days[0].hours;
+      const hoursToday = hoursData.slice(currentTime);
       const hoursTomorrow = data.days[1].hours;
       const hoursDayAfterTomorrow = data.days[2].hours.slice(0, currentTime);
+      const wholeHours = [...hoursToday, ...hoursTomorrow, ...hoursDayAfterTomorrow];
       
-      dateData = data.days[0].datetime.replace(/-/g, ', ');
-      const dateDataTomorrow = data.days[1].datetime.replace(/-/g, ', ');
-      const dateDataDayAfterTomorrow = data.days[2].datetime.replace(/-/g, ', ');
-      
-      renderPage(address, hours, dateData, mode, 0);
-      renderPage(address, hoursTomorrow, dateDataTomorrow, mode, 1);
-      renderPage(address, hoursDayAfterTomorrow, dateDataDayAfterTomorrow, mode, 2);
+      dateData = data.days.slice(0, 3).map((item) => item.datetime.replace(/-/g, ', '));
+      renderPage(address, wholeHours, dateData);
     }
 
-    locationData = location;
-    localStorage.setItem('location', JSON.stringify(locationData));
+    location = locationValue;
+    localStorage.setItem('location', JSON.stringify(locationValue));
   } catch {
     dialogError.showModal();
   }
 }
 
-searchBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  const locationInput = document.getElementById('location-input');
+const locationInput = document.getElementById('location-input');
 
-  if (locationInput.value === '') {
+searchBtn.addEventListener('click', () => {
+  const locationValue = locationInput.value;
+
+  if (locationValue === '') {
     return;
   }
 
-  const preLocationData = locationInput.value;
-  getData(preLocationData, 'twoDays');
   locationInput.value = '';
+  getData(locationValue, 'twoDays');
 });
 
-backBtn.addEventListener('click', (e) => {
-  e.preventDefault();
+hourlyBtn.addEventListener('click', () => {
+  getData(location, 'hourly');
+});
+
+twoDaysBtn.addEventListener('click', () => {
+  getData(location, 'twoDays');
+});
+
+fifteenDaysBtn.addEventListener('click', () => {
+  getData(location, 'fifteenDays');
+});
+
+backBtn.addEventListener('click', () => {
   dialogError.close();
-  getData(locationData, 'twoDays');
+  getData(location, 'twoDays');
 });
 
-hourlyBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  getData(locationData, 'hourly');
-});
+document.addEventListener('keydown', (e) => {
+  const locationValue = locationInput.value;
+  
+  if (e.key === 'Enter') {
+    e.preventDefault();
 
-twoDaysBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  getData(locationData, 'twoDays');
-});
-
-fifteenDaysBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  getData(locationData, 'fifteenDays');
+    if (locationValue === '') {
+      return;
+    }
+    
+    locationInput.value = '';
+    getData(locationValue, 'twoDays');
+  }
 });
 
 // Initial loading
-let locationData = JSON.parse(localStorage.getItem('location')) || 'Tokyo';
-getData(locationData, 'twoDays');
+let location = JSON.parse(localStorage.getItem('location')) || 'Tokyo';
+getData(location, 'twoDays');
