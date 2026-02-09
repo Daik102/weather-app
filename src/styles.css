@@ -7,14 +7,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 10px;
   font-family: Roboto, Arial, Helvetica, sans-serif;
   color: var(--black-theme);
 }
 
 :root {
   --black-theme: #111;
-  --black-transparent-theme: rgba(17, 17, 17, 0.5);
+  --black-transparent-theme: rgba(17, 17, 17, 0.4);
   --gray-theme: #888;
   --slightly-lightgray-theme: #a1a1a1;
   --lightgray-theme: #d1d1d1;
@@ -32,10 +31,11 @@
   --background-theme: #3d81b9;
 }
 
+html {
+  font-size: 10px;
+}
+
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   background-image: linear-gradient(var(--background-theme), var(--light-background-theme));
 }
 
@@ -53,7 +53,7 @@ button:hover {
 
 .dialog-loading,
 .dialog-error {
-  margin: 32.6rem auto;
+  margin: 30.2rem auto;
   width: 44rem;
   height: 25.2rem;
   background-color: var(--super-lightblue-theme);
@@ -108,15 +108,23 @@ button:hover {
   background-color: var(--lightblue-theme);
 }
 
-main {
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rem;
+  width: 52rem;
+  height: 100vh;
+  margin: 0 auto;
+  padding-top: 6rem;
+  background-color: var(--black-transparent-theme);
+}
+
+.main {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4rem;
-  width: 48rem;
-  height: 90vh;
-  padding: 8rem 0;
-  background-color: var(--black-transparent-theme);
 }
 
 h1 {
@@ -451,18 +459,104 @@ h2 {
   justify-content: center;
   align-items: center;
   gap: 0.8rem;
-  width: 48rem;
-  height: 10vh;
-  
-  background-color: var(--black-transparent-theme);
 }
 
 .link {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: var(--white-theme);
   text-decoration: none;
 }
 
 .link:hover {
   text-decoration: underline;
+}
+/* For portrait */
+@media screen and (orientation: portrait) {
+  .wrapper {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 20rem) {
+  html {
+    font-size: 5px;
+  }
+}
+
+@media screen and (min-width: 20.01rem) and (max-width: 25rem) {
+  html {
+    font-size: 6.5px;
+  }
+}
+
+@media screen and (min-width: 25.01rem) and (max-width: 30rem) {
+  html {
+    font-size: 7.5px;
+  }
+}
+
+@media screen and (min-width: 30.01rem) and (max-width: 40rem) {
+  html {
+    font-size: 8.5px;
+  }
+}
+
+@media screen and (min-width: 40.01rem) and (max-width: 48rem) {
+  html {
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 48.01rem) and (max-width: 74rem) {
+  html {
+    font-size: 11px;
+  }
+}
+
+@media screen and (min-width: 74.01rem) {
+  html {
+    font-size: 12px;
+  }
+}
+/* For landscape */
+@media screen and (orientation: landscape) and (max-height: 20rem) {
+  html {
+    font-size: 3.5px;
+  }
+}
+
+@media screen and (orientation: landscape) and (min-height: 20.01rem) and (max-height: 25rem) {
+  html {
+    font-size: 4px;
+  }
+}
+
+@media screen and (orientation: landscape) and (min-height: 25.01rem) and (max-height: 30rem) {
+  html {
+    font-size: 4.5px;
+  }
+}
+
+@media screen and (orientation: landscape) and (min-height: 30.01rem) and (max-height: 40rem) {
+  html {
+    font-size: 5.5px;
+  }
+}
+
+@media screen and (orientation: landscape) and (min-height: 40.01rem) and (max-height: 48rem) {
+  html {
+    font-size: 8px;
+  }
+}
+
+@media screen and (orientation: landscape) and (min-height: 48.01rem) and (max-height: 52rem) {
+  html {
+    font-size: 9px;
+  }
+}
+
+@media screen and (orientation: landscape) and (min-height: 52.01rem) {
+  html {
+    font-size: 10px;
+  }
 }
