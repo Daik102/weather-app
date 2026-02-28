@@ -20,6 +20,7 @@ function getIcon(condition) {
 
 export function renderPage(address, days, dateData) {
   let weatherHTML = '';
+  let dayCounter = 0;
 
   for (let i = 0; i < days.length; i++) {
     const conditions = days[i].conditions.split(',');
@@ -118,7 +119,6 @@ export function renderPage(address, days, dateData) {
     } else {
       const hourData = days[i].datetime;
       const hour = Number(hourData.slice(0, 2));
-      let dayCounter = 0;
       date = '&nbsp;';
 
       if (i === 0) {
@@ -127,7 +127,7 @@ export function renderPage(address, days, dateData) {
         dayCounter += 1;
         date = format(new Date(dateData[dayCounter]), 'd');
       }
-
+      
       const temp = Math.floor((days[i].temp - 32) * 5 / 9);
       const precip = Math.round(days[i].precip * 25.4);
 
