@@ -18,9 +18,30 @@ function getIcon(condition) {
   return icon;
 }
 
-export function renderPage(address, days, dateData) {
+export function renderPage(address, days, dateData, error) {
+  const container = document.querySelector('.container');
   let weatherHTML = '';
   let dayCounter = 0;
+
+  if (!days) {
+    if (!error) {
+      weatherHTML = `
+        <div class="dialog-loading">
+          <p class="loading-message">Loading...</p>
+        </div>
+      `;
+    } else {
+      weatherHTML = `
+        <div class="dialog-error">
+          <p class="error-message">Sorry, no results found.</p>
+          <button class="back-btn" type="button">Back</button>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = weatherHTML;
+    return;
+  }
 
   for (let i = 0; i < days.length; i++) {
     const conditions = days[i].conditions.split(',');
@@ -167,7 +188,6 @@ export function renderPage(address, days, dateData) {
   }
 
   const locationBoard = document.querySelector('.location-board');
-  const container = document.querySelector('.container');
   locationBoard.textContent = address;
 
   if (days.length === 2) {

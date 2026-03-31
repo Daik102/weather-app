@@ -1,19 +1,30 @@
 import './styles.css';
 import { renderPage } from './render';
 
+async function getData(e) {
+  let mode = 'twoDays';
+  
+  if (e) {
+    if (e.target.classList.contains('search-btn') && !locationInput.value || e.key === 'Enter' && !locationInput.value) {
+      return;
+    } else if (e.target.classList.contains('fifteen-days-btn')) {
+      mode = 'fifteenDays';
+    } else if (e.target.classList.contains('hourly-btn')) {
+      mode = 'hourly';
+    }
+  }
+  
+  let locationValue = '';
 
-const switchBtns = document.querySelectorAll('.switch-btn');
-const searchBtn = document.querySelector('.search-btn');
-const hourlyBtn = document.querySelector('.hourly-btn');
-const twoDaysBtn = document.querySelector('.two-days-btn');
-const fifteenDaysBtn = document.querySelector('.fifteen-days-btn');
-const backBtn = document.querySelector('.back-btn');
-const dialogLoading = document.querySelector('.dialog-loading');
-const dialogError = document.querySelector('.dialog-error');
+  if (locationInput.value) {
+    locationValue = locationInput.value;
+    locationInput.value = '';
+  } else {
+    locationValue = location;
+  }
 
-async function getData(locationValue, mode) {
   try {
-    dialogLoading.showModal();
+    renderPage();
     const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${locationValue}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
     const data = await response.json();
     const addressData = data.address;
@@ -24,11 +35,7 @@ async function getData(locationValue, mode) {
     let days = data.days;
     let dateData;
     
-    dialogLoading.close();
-
-    switchBtns.forEach((btn) => {
-      btn.classList.remove('selected-btn');
-    });
+    switchBtns.forEach((btn) => btn.classList.remove('selected-btn'));
 
     if (mode === 'twoDays') {
       twoDaysBtn.classList.add('selected-btn');
@@ -52,57 +59,34 @@ async function getData(locationValue, mode) {
     }
 
     location = locationValue;
-    localStorage.setItem('location', JSON.stringify(locationValue));
+    localStorage.setItem('location', JSON.stringify(location));
   } catch {
-    dialogError.showModal();
+    renderPage('', '', '', 'error');
+    const backBtn = document.querySelector('.back-btn');
+    backBtn.addEventListener('click', getData);
   }
 }
 
 const locationInput = document.getElementById('location-input');
+const searchBtn = document.querySelector('.search-btn');
+const switchBtns = document.querySelectorAll('.switch-btn');
+const hourlyBtn = document.querySelector('.hourly-btn');
+const twoDaysBtn = document.querySelector('.two-days-btn');
+const fifteenDaysBtn = document.querySelector('.fifteen-days-btn');
 
-searchBtn.addEventListener('click', () => {
-  const locationValue = locationInput.value;
-
-  if (locationValue === '') {
-    return;
-  }
-
-  locationInput.value = '';
-  getData(locationValue, 'twoDays');
-});
-
-hourlyBtn.addEventListener('click', () => {
-  getData(location, 'hourly');
-});
-
-twoDaysBtn.addEventListener('click', () => {
-  getData(location, 'twoDays');
-});
-
-fifteenDaysBtn.addEventListener('click', () => {
-  getData(location, 'fifteenDays');
-});
-
-backBtn.addEventListener('click', () => {
-  dialogError.close();
-  getData(location, 'twoDays');
-});
+searchBtn.addEventListener('click', getData);
+switchBtns.forEach((btn) => btn.addEventListener('click', getData));
 
 document.addEventListener('keydown', (e) => {
-  const locationValue = locationInput.value;
-  
   if (e.key === 'Enter') {
-    e.preventDefault();
+    const activeElement = document.activeElement;
 
-    if (locationValue === '') {
-      return;
+    if (activeElement === document.body || activeElement === locationInput) {
+      e.preventDefault();
+      getData(e);
     }
-    
-    locationInput.value = '';
-    getData(locationValue, 'twoDays');
   }
 });
-
 // Initial loading
 let location = JSON.parse(localStorage.getItem('location')) || 'Tokyo';
-getData(location, 'twoDays');
+getData();
