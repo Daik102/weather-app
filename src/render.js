@@ -24,19 +24,19 @@ export function renderPage(address, days, dateData, error) {
   let dayCounter = 0;
 
   if (!days) {
-    if (!error) {
-      weatherHTML = `
-        <div class="dialog-loading">
-          <p class="loading-message">Loading...</p>
-        </div>
-      `;
-    } else {
-      weatherHTML = `
+    if (error) {
+       weatherHTML = `
         <div class="dialog-error">
-          <p class="error-message">Sorry, no results found.</p>
+          <p class="error-message">No results found</p>
           <button class="back-btn" type="button">Back</button>
         </div>
       `;
+    } else {
+     weatherHTML = `
+      <div class="dialog-loading">
+        <p class="loading-message">Loading...</p>
+      </div>
+    `;
     }
     
     container.innerHTML = weatherHTML;
