@@ -2,6 +2,12 @@ import './styles.css';
 import { renderPage } from './render';
 
 async function getData(e) {
+  let loading = true;
+
+  if (loading) {
+    renderPage();
+  }
+  
   let mode = 'twoDays';
   
   if (e) {
@@ -14,17 +20,14 @@ async function getData(e) {
     }
   }
   
-  let locationValue = '';
+  let locationValue = location;
 
   if (locationInput.value) {
     locationValue = locationInput.value;
     locationInput.value = '';
-  } else {
-    locationValue = location;
   }
 
   try {
-    renderPage();
     const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${locationValue}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
     const data = await response.json();
     const addressData = data.address;
@@ -33,7 +36,6 @@ async function getData(e) {
       .map((item) => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase())
       .join(' ');
     let days = data.days;
-    let dateData;
     
     switchBtns.forEach((btn) => btn.classList.remove('selected-btn'));
 
@@ -53,8 +55,7 @@ async function getData(e) {
       const hoursTomorrow = data.days[1].hours;
       const hoursDayAfterTomorrow = data.days[2].hours.slice(0, currentTime);
       const wholeHours = [...hoursToday, ...hoursTomorrow, ...hoursDayAfterTomorrow];
-      
-      dateData = data.days.slice(0, 3).map((item) => item.datetime.replace(/-/g, ', '));
+      const dateData = data.days.slice(0, 3).map((item) => item.datetime.replace(/-/g, ', '));
       renderPage(address, wholeHours, dateData);
     }
 
@@ -64,6 +65,8 @@ async function getData(e) {
     renderPage('', '', '', 'error');
     const backBtn = document.querySelector('.back-btn');
     backBtn.addEventListener('click', getData);
+  } finally {
+    loading = false;
   }
 }
 
