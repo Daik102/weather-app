@@ -57,7 +57,7 @@ body {
   max-width: 52rem;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 4rem 0;
+  padding: 8rem 0 4rem;
   background-color: var(--black-transparent-theme);
 }
 
