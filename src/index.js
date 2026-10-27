@@ -1,6 +1,8 @@
 import './styles.css';
 import { renderPage } from './render';
 
+const apiKey = process.env.WEATHER_API_KEY;
+
 async function getData(e) {
   let loading = true;
 
@@ -28,7 +30,8 @@ async function getData(e) {
   }
 
   try {
-    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${locationValue}?key=3KUMKZJEGDSEC8FM5NGY3KZHE`, {mode:'cors'});
+    const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${locationValue}?key=${apiKey}`;
+    const response = await fetch(url, {mode:'cors'});
     const data = await response.json();
     const addressData = data.address;
     const address = addressData
